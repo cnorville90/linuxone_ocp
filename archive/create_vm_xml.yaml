@@ -1,0 +1,15 @@
+---
+- name: Prepare node vm XML for OCP cluster nodes
+  hosts: localhost
+  become: true
+  gather_facts: no
+  vars_files:
+    - vars.yaml
+
+  tasks:
+
+    - name: Cycle through the node list and create a corresponding libvirt xml file
+      template: 
+        src: "/var/lib/libvirt/images/automate/ocp_vm.xml.j2"
+        dest: "/var/lib/libvirt/images/{{ item.name }}.xml"
+      loop: "{{ cluster_nodes }}"

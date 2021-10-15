@@ -1,0 +1,30 @@
+--- 
+- name: Download the latest OCP installer and oc client
+  hosts: bastion
+  gather_facts: false
+  vars_files:
+    - vars.yaml
+
+  tasks: 
+
+    - name: Delete any old archive files
+      file:
+        path: "/root/{{ installer_file }}"  
+        state: absent
+
+    - name: Download and uncompress the installer
+      unarchive:
+        src: "{{ installer_url }}/{{ installer_file }}"
+        dest: /usr/local/bin
+        remote_src: yes
+    
+    - name: Download and uncompress the client
+      unarchive:
+        src: "{{ client_url }}/{{ client_file }}"
+        dest: /usr/local/bin
+        remote_src: yes
+
+    - name: Create an installer directory with a timestamp
+      file:
+        path: "/root/ocp_install_{{ date }}"
+        state: directory

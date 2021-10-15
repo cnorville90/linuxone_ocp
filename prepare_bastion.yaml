@@ -1,0 +1,34 @@
+---
+- name: Download and Prepare RHEL Image and create bastion host
+  hosts: localhost
+  vars_files:
+    - vars.yaml
+
+  tasks:
+
+    - name: Grab the RHEL image for s390 
+      get_url:
+        url: "{{ rhel_image }}"
+        dest: "{{ download_dest }}"
+      register: rhel_output
+
+    - name: Check output
+      debug:
+        var: rhel_output
+
+    - name: Prepare Bastion image
+      command: "qemu-img create -f qcow2 -F qcow2 -b {{ rhel_output.dest }} {{ download_dest }}/{{ item }}.qcow2"
+      loop: "{{ bastion }}"
+
+    - name: Customize bastion Image and set root password
+      command: >
+                virt-customize -a "{{ download_dest }}/{{ item }}.qcow2" 
+                --root-password password:temppassword
+                --uninstall cloud-init
+      loop: "{{ bastion }}"
+      register: bastion_output
+
+
+    - name: Check output
+      debug:
+        var: bastion_output

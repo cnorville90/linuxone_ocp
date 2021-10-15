@@ -1,0 +1,21 @@
+---
+- name: Validate all DNS records for the cluster machines. To be ran from the bastion host
+  hosts: bastion
+  vars_files:
+    - vars.yaml
+
+  tasks:
+
+    - name: Validate DNS records forward lookup for the cluster nodes
+      debug: 
+        msg: "Server {{ item.name }} resolves to: {{ lookup('dig', '{{ item.name }}.l1ocp02.dmz.') }}"
+      loop: "{{ cluster_nodes }}"
+      loop_control: 
+        label: "{{ item.name }}"
+  
+    - name: Validate DNS records reverse lookup for the cluster nodes
+      debug: 
+        msg: "Server {{ item.name }} resolves to: {{ lookup('dig', '{{ item.ipv4_addr }}/PTR') }}"
+      loop: "{{ cluster_nodes }}"
+      loop_control: 
+        label: "{{ item.name, item.ipv4_addr }}"

@@ -1,0 +1,16 @@
+--- 
+- name: Download the latest OCP installer and oc client
+  hosts: bastion
+  gather_facts: false
+  vars_files:
+    - vars.yaml
+
+  tasks: 
+
+    - name: Run the installer to generate the Kubernetes manifests for the cluster
+      command: openshift-install --dir=/root/ocp_install_{{ date }} wait-for bootstrap-complete
+      register: ocp_installation_output
+
+    - name: What all happened with openshift-install create ignition-configs
+      debug:
+        var: ocp_installation_output

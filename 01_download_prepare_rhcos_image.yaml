@@ -1,0 +1,27 @@
+---
+- name: Download and prepare RHCOS images
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - vars.yaml
+
+  tasks: 
+
+    - name: Download latest RHCOS for s390 image
+      get_url: 
+        url: "{{ download_url }}/{{ rhcos_image_gz }}"
+        dest: "{{ download_dest }}"
+        force: yes
+      register: rhcos_output
+
+    - name: Check output
+      debug:
+        var: rhcos_output
+
+    - name: Uncompress the image
+      command: gunzip {{ rhcos_output.dest }}
+
+    - name: Prepare Cluster Node images
+      command: qemu-img create -f qcow2 -F qcow2 -b  {{ download_dest }}{{ rhcos_image }} {{ image_dir }}{{ item.name }}.qcow2 120G
+      loop: "{{ cluster_nodes }}"
+

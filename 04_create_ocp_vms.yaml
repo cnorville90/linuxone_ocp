@@ -1,0 +1,40 @@
+--- 
+- name: Create and start the OCP Cluster VM's 
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - vars.yaml
+
+  tasks: 
+
+    - name: Set ownership of the ignition files
+      file:
+        path: "{{ image_dir }}/{{ item }}.ign"
+        owner: qemu
+        group: qemu
+      loop:
+        - master
+        - worker
+        - bootstrap
+
+    - name: Define the VM's
+      virt:
+        command: define
+        xml: "{{ lookup('template', 'ocp_vm.xml.j2') }}"
+      loop: "{{ cluster_nodes }}"
+
+    - name: Start OCP VM's
+      virt: 
+        name: "{{ item.name }}"
+        state: running
+      loop: "{{ cluster_nodes }}"
+
+    - name: list only running VMs
+      virt:
+        command: list_vms
+        state: running
+      register: running_vms
+
+    - name: List VMs
+      debug:
+        var: running_vms

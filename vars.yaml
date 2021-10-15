@@ -1,0 +1,56 @@
+download_url: https://mirror.openshift.com/pub/openshift-v4/s390x/dependencies/rhcos/latest/latest
+rhcos_image: rhcos-qemu.s390x.qcow2
+rhcos_image_gz: rhcos-qemu.s390x.qcow2.gz
+image_dir: /var/lib/libvirt/images/
+installer_url: https://mirror.openshift.com/pub/openshift-v4/s390x/clients/ocp/stable/
+installer_file: openshift-install-linux.tar.gz
+client_url: https://mirror.openshift.com/pub/openshift-v4/s390x/clients/ocp/latest/
+client_file: openshift-client-linux.tar.gz
+download_dest: /var/lib/libvirt/images/automate/
+date: "{{ lookup('pipe', 'date +%Y%m%d') }}"
+rhel_image: https://access.cdn.redhat.com/content/origin/files/sha256/9f/9ff2233aa1d6988872da340d6f200c02484e6d0b480e20ca0cec97edd9aa8268/rhel-8.4-s390x-kvm.qcow2?user=c72c5798d77628553be0da068bea2cd7&_auth_=1624657334_3cda0ee57cdd592e00d35dcd9e5620c1
+bastion:
+  - lsysocpbastion
+cluster_nodes:
+  - name: bootstrap
+    mac: 52:54:00:66:c2:4c
+    type: bootstrap
+    memory: 16840
+    cpu: 4
+    ipv4_addr: 192.168.67.222
+  - name: m1
+    mac: 52:54:00:43:20:f5
+    type: master
+    memory: 16840
+    cpu: 4
+    ipv4_addr: 192.168.67.223
+  - name: m2
+    mac: 52:54:00:23:33:e2
+    type: master
+    memory: 16840
+    cpu: 4
+    ipv4_addr: 192.168.67.224
+  - name: m3
+    mac: 52:54:00:9c:6f:d2
+    type: master
+    memory: 16840
+    cpu: 4
+    ipv4_addr: 192.168.67.225
+  - name: w1
+    mac: 52:54:00:68:97:df
+    type: worker
+    memory: 32768
+    cpu: 16
+    ipv4_addr: 192.168.67.226
+  - name: w2
+    mac: 52:54:00:83:c3:b8
+    type: worker
+    memory: 32768
+    cpu: 16
+    ipv4_addr: 192.168.67.227
+  - name: w3
+    mac: 52:54:00:25:dc:1a
+    type: worker
+    memory: 32768
+    cpu: 16
+    ipv4_addr: 192.168.67.228

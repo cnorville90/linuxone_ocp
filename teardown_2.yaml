@@ -1,0 +1,23 @@
+---
+- name: IBM / Red Hat Alliance Team ATG LinuxOne OCP Cluster Teardown
+  hosts: localhost
+  become: true
+  gather_facts: false
+  vars_files:
+    - vars.yaml
+
+  tasks:
+
+    - name: Teardown the bootstrap vm
+      community.libvirt.virt:
+        name: "{{ item.name }}"
+        state: destroyed
+      loop: "{{ cluster_nodes }}"
+
+
+    - name: Undefine the bootstrap
+      community.libvirt.virt:
+        name: "{{ item.name }}"
+        command: undefine
+      loop: "{{ cluster_nodes }}"
+ 

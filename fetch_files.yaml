@@ -1,0 +1,18 @@
+--- 
+- name: Download the latest OCP installer and oc client
+  hosts: bastion
+  gather_facts: false
+  vars_files:
+    - vars.yaml
+
+  tasks: 
+
+    - name: Copy over the ignition files from the Openshift Install directory on bastion
+      fetch:
+        src: "/root/ocp_install_{{ date }}/{{ item }}.ign"
+        dest: "{{ image_dir }}"
+        flat: yes
+      loop:
+        - bootstrap
+        - worker
+        - master
